@@ -6,7 +6,7 @@
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 12:46:20 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/21 17:11:28 by knottey          ###   ########.fr       */
+/*   Updated: 2023/05/21 18:31:30 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*get_next_line(int fd);
 char	*ft_read_until_endl(int fd, char *line);
 char	*ft_cut_line_endl(char *line);
+char	*ft_move_savep(char *save);
+
+// char	*ft_save(char *save);
 
 #endif
