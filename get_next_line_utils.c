@@ -6,7 +6,7 @@
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 12:46:28 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/21 12:52:20 by knottey          ###   ########.fr       */
+/*   Updated: 2023/05/21 14:24:51 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,38 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	ft_strlcpy(join_word, s1, s1_len + 1);
 	ft_strlcpy(join_word + s1_len, s2, s2_len + 1);
 	return (join_word);
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*dest;
+	size_t	s_len;
+
+	if (s == NULL)
+		return (NULL);
+	s_len = ft_strlen(s);
+	dest = (char *)malloc(sizeof(char) * (s_len + 1));
+	if (dest == NULL)
+		return (NULL);
+	ft_strlcpy(dest, s, s_len + 1);
+	return (dest);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	size_t	s_len;
+	char	*substr;
+
+	if (s == NULL)
+		return (NULL);
+	s_len = ft_strlen(s);
+	if (s_len < start)
+		return (ft_strdup(""));
+	if (s_len - start < len)
+		len = s_len - start;
+	substr = (char *)malloc(sizeof(char) * (len + 1));
+	if (substr == NULL)
+		return (NULL);
+	ft_strlcpy(substr, s + start, len + 1);
+	return (substr);
 }
