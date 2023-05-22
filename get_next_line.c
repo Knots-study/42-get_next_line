@@ -20,12 +20,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (save == NULL)
-	{
-		save = (char *)malloc(sizeof(char));
-		if (save == NULL)
-			return (NULL);
-		save[0] = '\0';
-	}
+		save = ft_strdup("");
 	save = ft_read_until_endl(fd, save);
 	line = ft_cut_line_endl(save);
 	save = ft_move_savep(save);
