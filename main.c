@@ -19,7 +19,7 @@ int main(void)
 	char 	*line;
 
 	line = "";
-	fd = open("sample1.txt", O_RDONLY);
+	fd = open("sample.txt", O_RDONLY);
 	while (line)
 	{
 		line = get_next_line(fd);

@@ -25,10 +25,9 @@ char	*ft_strdup(const char *s);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 char	*get_next_line(int fd);
-char	*ft_read_until_endl(int fd, char *line);
-char	*ft_cut_line_endl(char *line);
-char	*ft_move_savep(char *save);
-
-// char	*ft_save(char *save);
+char	*ft_read_until_endl(int fd, char *save);
+char	*ft_cut_line_endl(char **save);
+// char	*ft_cut_line_endl(char *line);
+// char	*ft_move_savep(char *save);
 
 #endif
