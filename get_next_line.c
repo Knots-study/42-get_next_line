@@ -6,7 +6,7 @@
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 12:46:23 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/22 19:45:24 by knottey          ###   ########.fr       */
+/*   Updated: 2023/05/23 18:20:53 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,64 +15,84 @@
 
 char	*get_next_line(int fd)
 {
+	int 		read_byte;
 	char		*line;
 	static char	*save;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || !(line = ft_strdup("")))
 		return (NULL);
-	if (save == NULL)
-		save = ft_strdup("");
-	save = ft_read_until_endl(fd, save);
-	line = ft_cut_line_endl(&save);
+	read_byte = 1;
+	if (save)
+		read_byte = join_save(&line, &save);
+	line = ft_read_until_endl(fd, read_byte, &line, &save);
+	if (!save)
+		return (NULL);
 	return (line);
 }
 
-char	*ft_read_until_endl(int fd, char *save)
+char	*ft_read_until_endl(int fd, int read_flag, char **line, char **save)
 {	
-	ssize_t	nread;
+	ssize_t	readbyte;
 	char	*buf;
 	char	*new_save;
 
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
 		return (NULL);
-	nread = 1;
-	while (!ft_strchr(save, '\n') && nread > 0)
+	readbyte = 1;
+	while (read_flag == 1 && (readbyte = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
-		nread = read(fd, buf, BUFFER_SIZE);
-		if (nread == -1)
-		{
-			free(buf);
-			return (NULL);
+		buf[readbyte] = '\0';
+		if (ft_strchr(buf, '\n'))
+			read_flag = ft_split_endl(line, save, buf);
+		else{
+			new_save = *line;
+			*line = ft_strjoin(*line, buf);
+			free(new_save);
 		}
-		buf[nread] = '\0';
-		new_save = ft_strjoin(save, buf);
-		free(save);
-		printf("%p\n",save);
-		save = new_save;
 	}
 	free(buf);
-	return (save);
+	return (*line);
 }
 
-char	*ft_cut_line_endl(char **save)
+int	ft_split_endl(char **line, char **save, char *buf)
 {
-    char *line_until_endl;
-    size_t idx;
+	char	*old_line;
+	char	*tmp;
+	char	*new_line_ptr;
 
-    idx = 0;
-    if (save == NULL || *save == NULL || *save[idx] == '\0')
-        return (NULL);
-    while ((*save)[idx] != '\0' && (*save)[idx] != '\n')
+	new_line_ptr = ft_strchr(buf, '\n');
+	tmp = ft_substr(buf, 0, new_line_ptr - buf);
+	old_line = *line;//ここでアドレスを保存しておかないとstrjoinでfreeしていないのでメモリリークする
+	*line = ft_strjoin(*line, tmp);
+	free(old_line);
+	free(tmp);
+	*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
+	return (0);
+}
+
+int	join_save(char **line, char **save)
+{
+	char *tmp;
+	char *new_line_ptr;
+
+	new_line_ptr = ft_strchr(*save, '\n');
+	if (new_line_ptr)
 	{
-        idx++;
+		tmp = *line;
+		*line = ft_substr(*save, 0, new_line_ptr - *save);
+		free(tmp);
+		tmp = *save;
+		*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
+		free(tmp);
+		return (0);
 	}
-	line_until_endl = (char *)malloc(sizeof(char) * (idx + 2));
-    if (line_until_endl == NULL)
-		return (NULL);
-	ft_memcpy(line_until_endl, *save, idx);
-    line_until_endl[idx] = '\n';
-    line_until_endl[idx + 1] = '\0';
-    *save += idx + 1;
-    return (line_until_endl);
+	else
+	{
+		tmp = *line;
+		*line = *save;
+		*save = NULL;
+		free(tmp);
+		return (1);
+	}
 }
