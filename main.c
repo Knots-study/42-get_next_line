@@ -6,7 +6,7 @@
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 12:53:10 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/24 19:32:09 by knottey          ###   ########.fr       */
+/*   Updated: 2023/05/25 00:07:14 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int main(void)
 	char 	*line;
 
 	line = "";
-	fd = open("sample1.txt", O_RDONLY);
+	fd = open("sample.txt", O_RDONLY);
 	while (line)
 	{
 		line = get_next_line(fd);

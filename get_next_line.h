@@ -32,12 +32,5 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 
 char	*get_next_line(int fd);
-int	ft_read_until_endl(int fd, char **line, char **save);
-int	ft_split_endl(char **line, char **save, char *buf);
-
-int	ft_join_save(char **line, char **save);
-
-// char	*ft_cut_line_endl(char *line);
-// char	*ft_move_savep(char *save);
 
 #endif
