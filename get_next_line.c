@@ -15,63 +15,77 @@
 
 char	*get_next_line(int fd)
 {
-	int 		read_byte;
+	int 		read_flag;
 	char		*line;
 	static char	*save;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || !(line = ft_strdup("")))
 		return (NULL);
-	read_byte = 1;
+	read_flag = ft_read_until_endl(fd, &line, &save);
 	if (save)
-		read_byte = join_save(&line, &save);
-	line = ft_read_until_endl(fd, read_byte, &line, &save);
-	if (!save)
-		return (NULL);
+		read_flag = ft_join_save(&line, &save);
+	(void)read_flag;
 	return (line);
 }
 
-char	*ft_read_until_endl(int fd, int read_flag, char **line, char **save)
-{	
-	ssize_t	readbyte;
-	char	*buf;
-	char	*new_save;
+int	ft_join_line_buf(char **line, char *buf)
+{
+	char	*temp;
+	
+	temp = *line;
+	*line = ft_strjoin(*line, buf);
+	free(temp);
+	return (KEEP_READ);
+}
 
+int	ft_read_until_endl(int fd, char **line, char **save)
+{	
+	int 	read_flag;
+	ssize_t	read_byte;
+	char	*buf;
+
+	read_flag = KEEP_READ;
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
-		return (NULL);
-	readbyte = 1;
-	while (read_flag == 1 && (readbyte = read(fd, buf, BUFFER_SIZE)) > 0)
+		return (STOP_READ);
+	read_byte = 1;
+	while (read_flag == KEEP_READ && read_byte != 0)
 	{
-		buf[readbyte] = '\0';
+		read_byte = read(fd, buf, BUFFER_SIZE);
+		if (read_byte == -1)
+		{
+			free(buf);
+			return (END_READ);
+		}
+		buf[read_byte] = '\0';
 		if (ft_strchr(buf, '\n'))
 			read_flag = ft_split_endl(line, save, buf);
-		else{
-			new_save = *line;
-			*line = ft_strjoin(*line, buf);
-			free(new_save);
-		}
+		else
+			read_flag = ft_join_line_buf(line, buf);
 	}
 	free(buf);
-	return (*line);
+	if (read_flag == KEEP_READ && read_byte == 0)
+		read_flag = STOP_READ;
+	return (read_flag);
 }
 
 int	ft_split_endl(char **line, char **save, char *buf)
 {
 	char	*old_line;
-	char	*tmp;
+	char	*temp;
 	char	*new_line_ptr;
 
 	new_line_ptr = ft_strchr(buf, '\n');
-	tmp = ft_substr(buf, 0, new_line_ptr - buf);
+	temp = ft_substr(buf, 0, new_line_ptr - buf);
 	old_line = *line;//ここでアドレスを保存しておかないとstrjoinでfreeしていないのでメモリリークする
-	*line = ft_strjoin(*line, tmp);
+	*line = ft_strjoin(*line, temp);
 	free(old_line);
-	free(tmp);
+	free(temp);
 	*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
-	return (0);
+	return (STOP_READ);
 }
 
-int	join_save(char **line, char **save)
+int	ft_join_save(char **line, char **save)
 {
 	char *tmp;
 	char *new_line_ptr;
@@ -85,7 +99,7 @@ int	join_save(char **line, char **save)
 		tmp = *save;
 		*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
 		free(tmp);
-		return (0);
+		return (STOP_READ);
 	}
 	else
 	{
@@ -93,6 +107,6 @@ int	join_save(char **line, char **save)
 		*line = *save;
 		*save = NULL;
 		free(tmp);
-		return (1);
+		return (KEEP_READ);
 	}
 }
