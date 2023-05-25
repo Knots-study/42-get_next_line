@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/21 12:46:20 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/23 18:01:11 by knottey          ###   ########.fr       */
+/*   Created: 2023/05/25 22:00:00 by knottey           #+#    #+#             */
+/*   Updated: 2023/05/25 22:00:00 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <stdlib.h>
 # include <fcntl.h>
 # include <unistd.h>
+
+# define FD_MAX 4096
 
 size_t	ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/21 12:46:23 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/23 18:20:53 by knottey          ###   ########.fr       */
+/*   Created: 2023/05/25 22:00:09 by knottey           #+#    #+#             */
+/*   Updated: 2023/05/25 22:00:09 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	ft_read_until_endl(int fd, char **save)
 {	
@@ -81,13 +81,13 @@ static char	*ft_new_save_line(char **save)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*save;
+	static char	*save[FD_MAX];
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	ft_read_until_endl(fd, &save);
-	if (!save)
+	ft_read_until_endl(fd, &save[fd]);
+	if (!save[fd])
 		return (NULL);
-	line = ft_new_save_line(&save);
+	line = ft_new_save_line(&save[fd]);
 	return (line);
 }

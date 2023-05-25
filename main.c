@@ -13,13 +13,15 @@
 #include <stdio.h>
 #include "get_next_line.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	int		fd;
 	char 	*line;
 
+	if (argc != 2)
+		return (0);
 	line = "";
-	fd = open("sample1.txt", O_RDONLY);
+	fd = open(argv[1], O_RDONLY);
 	while (line)
 	{
 		line = get_next_line(fd);
