@@ -14,17 +14,18 @@
 
 static void	ft_read_until_endl(int fd, char **save)
 {	
-	ssize_t	rb;
+	ssize_t	read_byte;
 	char	*buf;
 	char	*temp;
 
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
 		return ;
-	rb = 1;
-	while (!ft_strchr(*save, '\n') && (rb = read(fd, buf, BUFFER_SIZE)) > 0)
+	read_byte = 1;
+	while (!ft_strchr(*save, '\n') && read_byte > 0)
 	{
-		buf[rb] = '\0';	
+		read_byte = read(fd, buf, BUFFER_SIZE);
+		buf[read_byte] = '\0';
 		temp = *save;
 		*save = ft_strjoin(*save, buf);
 		free(temp);
@@ -32,36 +33,48 @@ static void	ft_read_until_endl(int fd, char **save)
 	free(buf);
 }
 
-static char	*ft_join_save(char **save)
+static char	*ft_new_save_endl(char **save, char *new_line_ptr)
 {
-	char *line;
-	char *tmp;
-	char *new_line_ptr;
+	char	*line;
+	char	*tmp;
 
 	line = NULL;
+	tmp = line;
+	line = ft_substr(*save, 0, new_line_ptr - *save + 1);
+	free(tmp);
+	tmp = *save;
+	*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
+	free(tmp);
+	return (line);
+}
+
+static char	*ft_new_save_no_endl(char **save)
+{
+	char	*line;
+	char	*tmp;
+
+	line = NULL;
+	tmp = line;
+	line = *save;
+	*save = NULL;
+	free(tmp);
+	return (line);
+}
+
+static char	*ft_new_save_line(char **save)
+{
+	char	*new_line_ptr;
+
 	if (**save == '\0')
 	{
 		free(*save);
-		return (line);
+		return (NULL);
 	}
-	if ((new_line_ptr = ft_strchr(*save, '\n')))
-	{
-		tmp = line;
-		line = ft_substr(*save, 0, new_line_ptr - *save + 1);
-		free(tmp);
-		tmp = *save;
-		*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
-		free(tmp);
-		return (line);
-	}
+	new_line_ptr = ft_strchr(*save, '\n');
+	if (new_line_ptr)
+		return (ft_new_save_endl(save, new_line_ptr));
 	else
-	{
-		tmp = line;
-		line = *save;
-		*save = NULL;
-		free(tmp);
-		return (line);
-	}
+		return (ft_new_save_no_endl(save));
 }
 
 char	*get_next_line(int fd)
@@ -74,6 +87,6 @@ char	*get_next_line(int fd)
 	ft_read_until_endl(fd, &save);
 	if (!save)
 		return (NULL);
-	line = ft_join_save(&save);
+	line = ft_new_save_line(&save);
 	return (line);
 }

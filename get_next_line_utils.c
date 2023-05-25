@@ -6,7 +6,7 @@
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 12:46:28 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/25 18:27:37 by knottey          ###   ########.fr       */
+/*   Updated: 2023/05/25 19:57:50 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,21 +82,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (join_word);
 }
 
-char	*ft_strdup(const char *s)
-{
-	char	*dest;
-	size_t	s_len;
-
-	if (s == NULL)
-		return (NULL);
-	s_len = ft_strlen(s);
-	dest = (char *)malloc(sizeof(char) * (s_len + 1));
-	if (dest == NULL)
-		return (NULL);
-	ft_strlcpy(dest, s, s_len + 1);
-	return (dest);
-}
-
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	s_len;
@@ -106,8 +91,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (NULL);
 	s_len = ft_strlen(s);
 	if (s_len < start)
-		return (ft_strdup(""));
-	if (s_len - start < len)
+		len = 0;
+	else if (s_len - start < len)
 		len = s_len - start;
 	substr = (char *)malloc(sizeof(char) * (len + 1));
 	if (substr == NULL)
@@ -115,4 +100,3 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	ft_strlcpy(substr, s + start, len + 1);
 	return (substr);
 }
-
