@@ -13,100 +13,96 @@
 #include <stdio.h>
 #include "get_next_line.h"
 
-static int	ft_join_line_buf(char **line, char *buf)
-{
-	char	*temp;
-	
-	temp = *line;
-	*line = ft_strjoin(*line, buf);
-	free(temp);
-	return (1);
-}
+// static void	ft_join_line_buf(char **save, char *buf)
+// {
+// 	char *temp;
 
-static int	ft_split_endl(char **line, char **save, char *buf)
-{
-	char	*old_line;
-	char	*temp;
-	char	*new_line_ptr;
+// 	temp = *save;
+// 	*save = ft_strjoin(*save, buf);
+// 	free(temp);
+// }
 
-	new_line_ptr = ft_strchr(buf, '\n');
-	temp = ft_substr(buf, 0, new_line_ptr - buf);
-	old_line = *line;//ここでアドレスを保存しておかないとstrjoinでfreeしていないのでメモリリークする
-	*line = ft_strjoin(*line, temp);
-	free(old_line);
-	free(temp);
-	*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
-	return (0);
-}
+// static void	ft_split_endl(char **line, char **save, char *buf)
+// {
+// 	char	*old_line;
+// 	char	*temp;
+// 	char	*new_line_ptr;
 
-static int	ft_read_until_endl(int fd, char **line, char **save)
+// 	new_line_ptr = ft_strchr(buf, '\n');
+// 	if (new_line_ptr)
+// 	{
+// 		temp = ft_substr(buf, 0, new_line_ptr - buf);
+// 		old_line = *line;
+// 		*line = ft_strjoin(*line, temp);
+// 		free(old_line);
+// 		free(temp);
+// 		*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
+// 	}
+// 	else
+// 		*save = NULL;
+// }
+
+static void	ft_read_until_endl(int fd, char **save)
 {	
-	int		read_flag;
-	ssize_t	read_byte;
+	ssize_t	rb;
 	char	*buf;
+	char	*temp;
 
-	read_flag = 1;
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
-		return (-1);
-	read_byte = 1;
-	while (read_flag == 1 && read_byte > 0)
+		return ;
+	rb = 1;
+	while (!ft_strchr(*save, '\n') && (rb = read(fd, buf, BUFFER_SIZE)) > 0)
 	{
-		read_byte = read(fd, buf, BUFFER_SIZE);
-		buf[read_byte] = '\0';
-		if (ft_strchr(buf, '\n'))
-		{
-			read_flag = ft_split_endl(line, save, buf);
-			break ;
-		}
-		else
-			read_flag = ft_join_line_buf(line, buf);//これでbufをくっつけたlineができる
-		
+		buf[rb] = '\0';	
+		temp = *save;
+		*save = ft_strjoin(*save, buf);
+		free(temp);
 	}
 	free(buf);
-	if (read_flag == 1 && read_byte == 0)
-		*line = NULL;
-	return (read_flag);
 }
 
-static int	ft_join_save(char **line, char **save)
+static char	*ft_join_save(char **save)
 {
+	char *line;
 	char *tmp;
 	char *new_line_ptr;
 
+	line = NULL;
 	new_line_ptr = ft_strchr(*save, '\n');
+	//saveの中に改行がある場合、line(出力するもの)を新たに生成。saveを動かす
 	if (new_line_ptr)
 	{
-		tmp = *line;
-		*line = ft_substr(*save, 0, new_line_ptr - *save);
+		tmp = line;
+		line = ft_substr(*save, 0, new_line_ptr - *save);
 		free(tmp);
 		tmp = *save;
 		*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
 		free(tmp);
-		return (0);
+		return (line);
 	}
 	else
+	//saveの中に改行がない場合、line(出力するもの)を新たに生成(完成版じゃない)。saveをNULLにする
 	{
-		tmp = *line;
-		*line = *save;
+		tmp = line;
+		line = *save;
 		*save = NULL;
 		free(tmp);
-		return (1);
+		return (line);
 	}
 }
 
+// saveがNULLの時にNULLを返すようにする必要がある
 char	*get_next_line(int fd)
 {
-	int			read_flag;
 	char		*line;
 	static char	*save;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || !(line = ft_strdup("")))
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	read_flag = 1;
-	if (save)
-		read_flag = ft_join_save(&line, &save);
-	if (read_flag == 1)
-		read_flag = ft_read_until_endl(fd, &line, &save);
+	ft_read_until_endl(fd, &save);
+	if (!save)
+		return (NULL);
+	line = ft_join_save(&save);
 	return (line);
 }

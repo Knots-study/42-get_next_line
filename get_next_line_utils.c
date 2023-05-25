@@ -6,7 +6,7 @@
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 12:46:28 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/24 20:54:04 by knottey          ###   ########.fr       */
+/*   Updated: 2023/05/25 18:27:37 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 	size_t	src_len;
 
 	idx = 0;
+	src_len = 0;
+	if (src == NULL)
+		return (src_len);
 	src_len = ft_strlen(src);
 	while (src[idx] != '\0' && idx + 1 < dstsize)
 	{
@@ -113,19 +116,3 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (substr);
 }
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
-{
-	char		*c_dest;
-	const char	*c_src;
-	size_t		i;
-
-	c_dest = (char *)dest;
-	c_src = (const char *)src;
-	i = 0;
-	while (i < n)
-	{
-		c_dest[i] = c_src[i];
-		i++;
-	}
-	return (dest);
-}
