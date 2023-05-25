@@ -17,11 +17,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-# define KEEP_READ	1
-# define STOP_READ	0
-# define END_READ	-1
-# define FD_MAX 4096
-
 size_t	ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);

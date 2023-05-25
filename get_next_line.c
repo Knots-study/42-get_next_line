@@ -10,37 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "get_next_line.h"
-
-// static void	ft_join_line_buf(char **save, char *buf)
-// {
-// 	char *temp;
-
-// 	temp = *save;
-// 	*save = ft_strjoin(*save, buf);
-// 	free(temp);
-// }
-
-// static void	ft_split_endl(char **line, char **save, char *buf)
-// {
-// 	char	*old_line;
-// 	char	*temp;
-// 	char	*new_line_ptr;
-
-// 	new_line_ptr = ft_strchr(buf, '\n');
-// 	if (new_line_ptr)
-// 	{
-// 		temp = ft_substr(buf, 0, new_line_ptr - buf);
-// 		old_line = *line;
-// 		*line = ft_strjoin(*line, temp);
-// 		free(old_line);
-// 		free(temp);
-// 		*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
-// 	}
-// 	else
-// 		*save = NULL;
-// }
 
 static void	ft_read_until_endl(int fd, char **save)
 {	
@@ -69,12 +39,15 @@ static char	*ft_join_save(char **save)
 	char *new_line_ptr;
 
 	line = NULL;
-	new_line_ptr = ft_strchr(*save, '\n');
-	//saveの中に改行がある場合、line(出力するもの)を新たに生成。saveを動かす
-	if (new_line_ptr)
+	if (**save == '\0')
+	{
+		free(*save);
+		return (line);
+	}
+	if ((new_line_ptr = ft_strchr(*save, '\n')))
 	{
 		tmp = line;
-		line = ft_substr(*save, 0, new_line_ptr - *save);
+		line = ft_substr(*save, 0, new_line_ptr - *save + 1);
 		free(tmp);
 		tmp = *save;
 		*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
@@ -82,7 +55,6 @@ static char	*ft_join_save(char **save)
 		return (line);
 	}
 	else
-	//saveの中に改行がない場合、line(出力するもの)を新たに生成(完成版じゃない)。saveをNULLにする
 	{
 		tmp = line;
 		line = *save;
@@ -92,7 +64,6 @@ static char	*ft_join_save(char **save)
 	}
 }
 
-// saveがNULLの時にNULLを返すようにする必要がある
 char	*get_next_line(int fd)
 {
 	char		*line;
