@@ -14,6 +14,7 @@
 
 static void	ft_read_until_endl(int fd, char **save)
 {	
+	size_t	save_len;
 	ssize_t	read_byte;
 	char	*buf;
 	char	*temp;
@@ -21,6 +22,7 @@ static void	ft_read_until_endl(int fd, char **save)
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buf == NULL)
 		return ;
+	save_len = ft_strlen(*save);
 	while (!ft_strchr(*save, '\n'))
 	{
 		read_byte = read(fd, buf, BUFFER_SIZE);
@@ -28,8 +30,10 @@ static void	ft_read_until_endl(int fd, char **save)
 			break ;
 		buf[read_byte] = '\0';
 		temp = *save;
-		*save = ft_strjoin(*save, buf);
+		*save = ft_strjoin_len(*save, buf, save_len, read_byte + 1);
 		free(temp);
+		temp = NULL;
+		save_len += read_byte;
 	}
 	free(buf);
 }
@@ -43,6 +47,7 @@ static char	*ft_new_save_endl(char **save, char *new_line_ptr)
 	tmp = line;
 	line = ft_substr(*save, 0, new_line_ptr - *save + 1);
 	free(tmp);
+	tmp = NULL;
 	tmp = *save;
 	*save = ft_substr(new_line_ptr + 1, 0, ft_strlen(new_line_ptr + 1));
 	free(tmp);

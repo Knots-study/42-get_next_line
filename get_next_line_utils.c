@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 12:46:28 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/25 21:59:31 by knottey          ###   ########.fr       */
+/*   Updated: 2023/05/26 19:48:18 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
+#include "get_next_line.h"
 
 size_t	ft_strlen(const char *s)
 {
 	size_t	length;
 
 	length = 0;
+	if (s == NULL)
+		return (length);
 	while (s[length] != '\0')
 		length++;
 	return (length);
@@ -24,43 +26,33 @@ size_t	ft_strlen(const char *s)
 
 char	*ft_strchr(const char *s, int c)
 {
-	size_t	idx;
-	size_t	length;
-
 	if (s == NULL)
 		return (NULL);
-	length = ft_strlen(s) + 1;
-	idx = 0;
-	while (idx < length)
-	{
-		if (s[idx] == (char)c)
-			return ((char *)(s + idx));
-		idx++;
-	}
+	while (*s != '\0' && *s != (char)c)
+		s++;
+	if (*s == (char)c)
+		return ((char *)s);
 	return (NULL);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
-	size_t	idx;
-	size_t	src_len;
+	char		*c_dest;
+	const char	*c_src;
+	size_t		i;
 
-	idx = 0;
-	src_len = 0;
-	if (src == NULL)
-		return (src_len);
-	src_len = ft_strlen(src);
-	while (src[idx] != '\0' && idx + 1 < dstsize)
+	c_dest = (char *)dest;
+	c_src = (const char *)src;
+	i = 0;
+	while (i < n)
 	{
-		dst[idx] = src[idx];
-		idx++;
+		c_dest[i] = c_src[i];
+		i++;
 	}
-	if (dstsize)
-		dst[idx] = '\0';
-	return (src_len);
+	return (dest);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin_len(char const *s1, char const *s2, size_t n1, size_t n2)
 {
 	char	*join_word;
 	size_t	s1_len;
@@ -71,14 +63,15 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (s1 == NULL && s2 == NULL)
 		return (NULL);
 	if (s1 != NULL)
-		s1_len = ft_strlen(s1);
+		s1_len = n1;
 	if (s2 != NULL)
-		s2_len = ft_strlen(s2);
+		s2_len = n2;
 	join_word = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1));
 	if (join_word == NULL)
 		return (NULL);
-	ft_strlcpy(join_word, s1, s1_len + 1);
-	ft_strlcpy(join_word + s1_len, s2, s2_len + 1);
+	ft_memcpy(join_word, s1, s1_len);
+	ft_memcpy(join_word + s1_len, s2, s2_len);
+	join_word[s1_len + s2_len] = '\0';
 	return (join_word);
 }
 
@@ -97,6 +90,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	substr = (char *)malloc(sizeof(char) * (len + 1));
 	if (substr == NULL)
 		return (NULL);
-	ft_strlcpy(substr, s + start, len + 1);
+	ft_memcpy(substr, s + start, len);
+	substr[len] = '\0';
 	return (substr);
 }

@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 	while (line)
 	{
 		line = get_next_line(fd);
-		//printf(">>> %s", line);
+		printf(">>> %s", line);
 		free(line);
 	}
 	return (0);
