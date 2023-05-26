@@ -22,8 +22,6 @@ int main(int argc, char *argv[])
 		return (0);
 	line = "";
 	fd = open(argv[1], O_RDONLY);
-	//(void)argc;
-	//(void)argv;
 	while (line)
 	{
 		line = get_next_line(fd);
