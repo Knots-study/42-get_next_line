@@ -1,16 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: knottey <Twitter:@knottey>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/21 12:46:23 by knottey           #+#    #+#             */
-/*   Updated: 2023/05/23 18:20:53 by knottey          ###   ########.fr       */
+/*   Created: 2023/05/27 20:23:56 by knottey           #+#    #+#             */
+/*   Updated: 2023/05/27 20:23:56 by knottey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "get_next_line_bonus.h"
 
 static void	ft_read_until_endl(int fd, char **save)
