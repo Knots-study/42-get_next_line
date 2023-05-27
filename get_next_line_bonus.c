@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "get_next_line_bonus.h"
 
 static void	ft_read_until_endl(int fd, char **save)
@@ -79,7 +80,7 @@ static char	*ft_new_save_line(char **save)
 	return (line);
 }
 
-void	release_fdlist(t_list **head, t_list **target)
+static void	release_fdlist(t_list **head, t_list **target)
 {
 	t_list	**tmp;
 
