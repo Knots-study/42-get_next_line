@@ -110,7 +110,7 @@ char	*get_next_line(int fd)
 	if (point_fdlist == NULL)
 		point_fdlist = create_newfd_elem(&head_point_fdlist, fd);
 	ft_read_until_endl(fd, &point_fdlist->save);
-	if (!point_fdlist->save)
+	if (!point_fdlist->save || point_fdlist->save[0] == '\0')
 	{
 		release_fdlist(&head_point_fdlist, &point_fdlist);
 		return (NULL);
